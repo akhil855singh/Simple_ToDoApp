@@ -11,4 +11,9 @@ import Foundation
 class ToDoItem{
     var text = ""
     var checked = false
+    
+    init(toDoName:String, isChecked:Bool) {
+        self.text = toDoName
+        self.checked = isChecked
+    }
 }

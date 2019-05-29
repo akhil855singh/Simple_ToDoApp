@@ -19,11 +19,11 @@ class ToDoViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        self.navigationController?.navigationBar.prefersLargeTitles = true
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return todoList.todoItems.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -48,10 +48,10 @@ class ToDoViewController: UITableViewController {
     fileprivate func configureCheckmark(for cell:UITableViewCell, and item:ToDoItem){
         
         if item.checked{
-            cell.accessoryType = .none
+            cell.accessoryType = .checkmark
         }
         else{
-            cell.accessoryType = .checkmark
+            cell.accessoryType = .none
         }
         item.checked.toggle()
     }
@@ -61,6 +61,13 @@ class ToDoViewController: UITableViewController {
         if let label = cell.viewWithTag(100) as? UILabel{
             label.text = item.text
         }
+    }
+    
+    @IBAction func addItem(_ sender: Any) {
+        let countOfToDoItems = todoList.todoItems.count
+        todoList.createNewToDoItem()
+        let indexPath = IndexPath(row: countOfToDoItems, section: 0)
+        tableView.insertRows(at: [indexPath], with: .automatic)
     }
 }
 
