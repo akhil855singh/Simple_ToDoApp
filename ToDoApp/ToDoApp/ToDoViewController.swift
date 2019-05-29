@@ -30,35 +30,37 @@ class ToDoViewController: UITableViewController {
         let cellIdentifier = "ToDoItem"
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
         
-        if let label = cell.viewWithTag(100) as? UILabel{
-            let toDoItem = todoList.todoItems[indexPath.row]
-            label.text = toDoItem.text
-        }
-        
-        configureCheckmark(for: cell, and: indexPath)
+        let toDoItem = todoList.todoItems[indexPath.row]
+        configureText(for: cell, and: toDoItem)
+        configureCheckmark(for: cell, and: toDoItem)
 
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let cell = tableView.cellForRow(at: indexPath){
-            configureCheckmark(for: cell, and: indexPath)
+            let toDoItem = todoList.todoItems[indexPath.row]
+            configureCheckmark(for: cell, and: toDoItem)
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    fileprivate func configureCheckmark(for cell:UITableViewCell, and indexPath:IndexPath){
+    fileprivate func configureCheckmark(for cell:UITableViewCell, and item:ToDoItem){
         
-        let toDoItem = todoList.todoItems[indexPath.row]
-
-        if toDoItem.checked{
+        if item.checked{
             cell.accessoryType = .none
         }
         else{
             cell.accessoryType = .checkmark
         }
-        toDoItem.checked.toggle()
+        item.checked.toggle()
     }
-
+    
+    fileprivate func configureText(for cell:UITableViewCell, and item:ToDoItem){
+        
+        if let label = cell.viewWithTag(100) as? UILabel{
+            label.text = item.text
+        }
+    }
 }
 
