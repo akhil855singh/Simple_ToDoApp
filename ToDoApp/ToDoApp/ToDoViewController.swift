@@ -38,9 +38,11 @@ class ToDoViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let toDoItem = self.todoList.todoItems[indexPath.row]
         if let cell = tableView.cellForRow(at: indexPath){
-            let toDoItem = todoList.todoItems[indexPath.row]
-            configureCheckmark(for: cell, and: toDoItem)
+            toDoItem.checked.toggle()
+            self.configureCheckmark(for: cell, and: toDoItem)
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -54,13 +56,14 @@ class ToDoViewController: UITableViewController {
     
     fileprivate func configureCheckmark(for cell:UITableViewCell, and item:ToDoItem){
         
+        if let check = cell.viewWithTag(1001) as? UILabel{
         if item.checked{
-            cell.accessoryType = .checkmark
+            check.text = "✓"
         }
         else{
-            cell.accessoryType = .none
+            check.text = ""
         }
-        item.checked.toggle()
+        }
     }
     
     fileprivate func configureText(for cell:UITableViewCell, and item:ToDoItem){
@@ -70,11 +73,41 @@ class ToDoViewController: UITableViewController {
         }
     }
     
-    @IBAction func addItem(_ sender: Any) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "AddItemSegue" || segue.identifier == "EditItemSegue"{
+            if let addItemViewController = segue.destination as? ItemDetailViewController{
+                addItemViewController.addItemDelegate = self
+                if let cell = sender as? UITableViewCell{
+                    let indexPath = tableView.indexPath(for: cell)
+                    let toDoItem = todoList.todoItems[indexPath?.row ?? 0]
+                    addItemViewController.toBeEditedItem = toDoItem
+                    addItemViewController.toBeEditedIndex = indexPath
+                }
+            }
+        }
+    }
+    
+    fileprivate func addItem(_ item:ToDoItem) {
         let countOfToDoItems = todoList.todoItems.count
-        todoList.createNewToDoItem()
+        todoList.todoItems.append(item)
         let indexPath = IndexPath(row: countOfToDoItems, section: 0)
         tableView.insertRows(at: [indexPath], with: .automatic)
+    }
+    
+    fileprivate func replaceItem(_ item:ToDoItem, index:IndexPath) {
+        todoList.todoItems[index.row] = item
+        tableView.reloadRows(at: [index], with: .automatic)
+    }
+}
+
+extension ToDoViewController:ItemDetailTableViewControllerDelegate{
+    func itemDetailViewController(_ controller: ItemDetailViewController, didFinishUpdating item: ToDoItem, and indexPath: IndexPath?) {
+        if let index = indexPath{
+            replaceItem(item, index: index)
+        }
+        else{
+            addItem(item)
+        }
     }
 }
 

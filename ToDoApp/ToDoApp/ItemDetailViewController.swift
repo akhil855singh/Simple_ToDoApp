@@ -8,8 +8,15 @@
 
 import UIKit
 
-class AddItemTableViewController: UITableViewController {
+protocol ItemDetailTableViewControllerDelegate: class{
+    func itemDetailViewController(_ controller:ItemDetailViewController,didFinishUpdating item:ToDoItem, and indexPath:IndexPath?)
+}
 
+class ItemDetailViewController: UITableViewController {
+
+    var addItemDelegate:ItemDetailTableViewControllerDelegate?
+    var toBeEditedItem:ToDoItem?
+    var toBeEditedIndex:IndexPath?
     @IBOutlet weak var doneBarButtonItem: UIBarButtonItem!
     @IBOutlet weak var addItemTextField: UITextField!
     override func viewDidLoad() {
@@ -18,6 +25,13 @@ class AddItemTableViewController: UITableViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        if let item = toBeEditedItem{
+            addItemTextField.text = item.text
+            self.title = "Edit Item"
+        }
+        else{
+            self.title = "Add Item"
+        }
         addItemTextField.becomeFirstResponder()
     }
     
@@ -30,11 +44,18 @@ class AddItemTableViewController: UITableViewController {
     }
     @IBAction func done(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
+        if let delegate = addItemDelegate{
+            var toDoItem = ToDoItem(toDoName: addItemTextField.text ?? "", isChecked: false)
+            if let editedItem = toBeEditedItem{
+                toDoItem = editedItem
+                toDoItem.text = addItemTextField.text ?? ""
+            }
+            delegate.itemDetailViewController(self, didFinishUpdating: toDoItem, and: toBeEditedIndex)
+        }
     }
-    
 }
 
-extension AddItemTableViewController:UITextFieldDelegate{
+extension ItemDetailViewController:UITextFieldDelegate{
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return false
