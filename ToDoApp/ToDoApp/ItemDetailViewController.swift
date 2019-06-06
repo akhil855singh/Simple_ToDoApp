@@ -45,7 +45,7 @@ class ItemDetailViewController: UITableViewController {
     @IBAction func done(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
         if let delegate = addItemDelegate{
-            var toDoItem = ToDoItem(toDoName: addItemTextField.text ?? "", isChecked: false)
+            var toDoItem = ToDoItem(toDoName: addItemTextField.text ?? "", isChecked: false,priority: .medium)
             if let editedItem = toBeEditedItem{
                 toDoItem = editedItem
                 toDoItem.text = addItemTextField.text ?? ""

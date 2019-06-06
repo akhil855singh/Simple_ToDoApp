@@ -13,14 +13,14 @@
         <scene sceneID="D7f-cH-vcj">
             <objects>
                 <tableViewController storyboardIdentifier="ToDoViewController" id="NaG-8p-aap" customClass="ToDoViewController" customModule="ToDoApp" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="p37-CB-q8e">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="p37-CB-q8e">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="detailDisclosureButton" indentationWidth="10" reuseIdentifier="ToDoItem" id="AUA-Nx-6il">
-                                <rect key="frame" x="0.0" y="28" width="414" height="44"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="detailDisclosureButton" indentationWidth="10" reuseIdentifier="ToDoItem" id="AUA-Nx-6il" customClass="ToDoTableViewCell" customModule="ToDoApp" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="55.5" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="AUA-Nx-6il" id="Odk-sD-rgC">
                                     <rect key="frame" x="0.0" y="0.0" width="342" height="43.5"/>
@@ -49,6 +49,8 @@
                                 </tableViewCellContentView>
                                 <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <connections>
+                                    <outlet property="checkMarkLabel" destination="RSr-9x-FTE" id="ce7-Vm-2oo"/>
+                                    <outlet property="toDoNameLabel" destination="IEj-Ep-D8k" id="YvW-7h-q87"/>
                                     <segue destination="ZWl-lj-bYB" kind="show" identifier="EditItemSegue" trigger="accessoryAction" id="YJI-vP-8bQ"/>
                                 </connections>
                             </tableViewCell>
@@ -59,12 +61,22 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="ToDo List" id="IqP-Va-gPG">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="Zyb-mz-0zs">
-                            <connections>
-                                <segue destination="ZWl-lj-bYB" kind="show" identifier="AddItemSegue" id="bVi-PS-dD8"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="add" id="Zyb-mz-0zs">
+                                <connections>
+                                    <segue destination="ZWl-lj-bYB" kind="show" identifier="AddItemSegue" id="bVi-PS-dD8"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem enabled="NO" title="Delete" id="iDt-XP-NSu">
+                                <connections>
+                                    <action selector="deleteItems:" destination="NaG-8p-aap" id="NKN-jN-l3k"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
+                    <connections>
+                        <outlet property="deleteBarButton" destination="iDt-XP-NSu" id="3Od-AJ-K3g"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0KR-gL-ASu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

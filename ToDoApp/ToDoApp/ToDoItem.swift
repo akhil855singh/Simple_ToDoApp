@@ -8,12 +8,21 @@
 
 import Foundation
 
+enum Priority:Int,CaseIterable {
+    case high,
+    medium,
+    low,
+    no
+}
+
 class ToDoItem{
-    var text = ""
+    @objc var text = ""
     var checked = false
+    var itemPriority:Priority = .no
     
-    init(toDoName:String, isChecked:Bool) {
+    init(toDoName:String, isChecked:Bool, priority:Priority) {
         self.text = toDoName
         self.checked = isChecked
+        self.itemPriority = priority
     }
 }
