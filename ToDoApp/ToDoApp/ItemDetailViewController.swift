@@ -8,17 +8,17 @@
 
 import UIKit
 
-protocol ItemDetailTableViewControllerDelegate: class{
-    func itemDetailViewController(_ controller:ItemDetailViewController,didFinishUpdating item:ToDoItem, and indexPath:IndexPath?)
-}
-
 class ItemDetailViewController: UITableViewController {
 
-    var addItemDelegate:ItemDetailTableViewControllerDelegate?
+    @IBOutlet weak var priorityLabel: UILabel!
+    @IBOutlet weak var addPriorityButton: UIButton!
     var toBeEditedItem:ToDoItem?
     var toBeEditedIndex:IndexPath?
+    var priorityObject:Priority = .low
     @IBOutlet weak var doneBarButtonItem: UIBarButtonItem!
     @IBOutlet weak var addItemTextField: UITextField!
+    
+    var itemUpdateHandler:((ToDoItem,IndexPath?)->Void)!
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -28,9 +28,11 @@ class ItemDetailViewController: UITableViewController {
         if let item = toBeEditedItem{
             addItemTextField.text = item.text
             self.title = "Edit Item"
+            addPriorityButton.isHidden = true
         }
         else{
             self.title = "Add Item"
+            addPriorityButton.isHidden = false
         }
         addItemTextField.becomeFirstResponder()
     }
@@ -39,19 +41,55 @@ class ItemDetailViewController: UITableViewController {
         return nil
     }
 
+    @IBAction func addPriority(_ sender: Any) {
+        let priorityActionSheet = UIAlertController(title: "", message: "Select Priority", preferredStyle: .actionSheet)
+        let highAction = UIAlertAction(title: "High", style: .default) { (action) in
+            self.updatePriority(.high)
+        }
+        priorityActionSheet.addAction(highAction)
+        let mediumAction = UIAlertAction(title: "Medium", style: .default) { (action) in
+            self.updatePriority(.medium)
+        }
+        priorityActionSheet.addAction(mediumAction)
+        let lowAction = UIAlertAction(title: "Low", style: .default) { (action) in
+            self.updatePriority(.low)
+        }
+        priorityActionSheet.addAction(lowAction)
+        self.present(priorityActionSheet, animated: true, completion: nil)
+        priorityActionSheet.view.tintColor = appThemeColor
+    }
+    
+    private func updatePriority(_ priority:Priority){
+        priorityObject = priority
+        doneBarButtonItem.isEnabled = true
+        switch priority {
+        case .high:
+            priorityLabel.text = "!!!"
+            break
+        case .medium:
+            priorityLabel.text = "!!"
+            break
+        case .low:
+            priorityLabel.text = "!"
+            break
+        default:
+            priorityLabel.text = ""
+        }
+    }
+    
     @IBAction func cancel(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
     @IBAction func done(_ sender: Any) {
-        self.navigationController?.popViewController(animated: true)
-        if let delegate = addItemDelegate{
-            var toDoItem = ToDoItem(toDoName: addItemTextField.text ?? "", isChecked: false,priority: .medium)
-            if let editedItem = toBeEditedItem{
-                toDoItem = editedItem
-                toDoItem.text = addItemTextField.text ?? ""
+            if let handler = itemUpdateHandler{
+                let toDoItem = ToDoItem(toDoName: addItemTextField.text ?? "", isChecked: false,priority: priorityObject)
+                if let editedItem = toBeEditedItem{
+                    toDoItem.checked = editedItem.checked
+                    toDoItem.text = addItemTextField.text ?? ""
+                }
+                handler(toDoItem,toBeEditedIndex)
             }
-            delegate.itemDetailViewController(self, didFinishUpdating: toDoItem, and: toBeEditedIndex)
-        }
+        self.navigationController?.popViewController(animated: true)
     }
 }
 

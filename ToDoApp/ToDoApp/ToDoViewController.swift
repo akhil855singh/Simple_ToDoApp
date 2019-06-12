@@ -12,6 +12,7 @@ class ToDoViewController: UITableViewController {
 
     var todoList:ToDoList
     
+    @IBOutlet weak var emptyLabel: UILabel!
     @IBOutlet weak var deleteBarButton: UIBarButtonItem!
     required init?(coder aDecoder: NSCoder) {
         todoList = ToDoList()
@@ -21,9 +22,7 @@ class ToDoViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.navigationBar.prefersLargeTitles = true
-        self.navigationItem.leftBarButtonItem = editButtonItem
         tableView.allowsMultipleSelectionDuringEditing = true
-        
     }
     
     private func getPriorityForIndex(_ index:Int) -> Priority{
@@ -55,6 +54,14 @@ class ToDoViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let priority = getPriorityForIndex(section)
+        if todoList.isListEmpty(){
+            emptyLabel.isHidden = false
+            self.navigationItem.leftBarButtonItem = nil
+        }
+        else{
+            emptyLabel.isHidden = true
+            self.navigationItem.leftBarButtonItem = editButtonItem
+        }
         return todoList.toDoItems(for: priority).count
     }
     
@@ -71,25 +78,31 @@ class ToDoViewController: UITableViewController {
         let toDoItemBasedOnPriority = toDoItemsBasedOnPriority[indexPath.row]
         cell.configureCheckmark(for: toDoItemBasedOnPriority)
         cell.configureText(for: toDoItemBasedOnPriority)
+        cell.tintColor = appThemeColor
         return cell
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         let priority = getPriorityForIndex(section)
+        var priorityString = ""
         switch priority {
         case .high:
-            return "  High Priority Tasks"
+            priorityString = "  High Priority Tasks"
         case .medium:
-            return "  Medium Priority Tasks"
+            priorityString =  "  Medium Priority Tasks"
         case .low:
-            return "  Low Priority Tasks"
+            priorityString = "  Low Priority Tasks"
         case .no:
-            return "  No Priority Tasks"
+            priorityString = "  No Priority Tasks"
         }
+        if todoList.isListEmpty(){
+            priorityString = ""
+        }
+        return priorityString
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-            return 40
+        return 40
     }
         
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -125,13 +138,30 @@ class ToDoViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "AddItemSegue" || segue.identifier == "EditItemSegue"{
             if let addItemViewController = segue.destination as? ItemDetailViewController{
-                addItemViewController.addItemDelegate = self
                 if let cell = sender as? UITableViewCell{
                     let indexPath = tableView.indexPath(for: cell)
                     let priorityObject = getPriorityForIndex(indexPath?.section ?? 0)
                     let toDoItem = todoList.toDoItems(for: priorityObject)[indexPath?.row ?? 0]
                     addItemViewController.toBeEditedItem = toDoItem
                     addItemViewController.toBeEditedIndex = indexPath
+                    addItemViewController.itemUpdateHandler = {(item,indexPath) in
+                        if let index = indexPath{
+                            self.replaceItem(item, index: index)
+                        }
+                        else{
+                            self.addItem(item)
+                        }
+                    }
+                }
+                else{
+                    addItemViewController.itemUpdateHandler = {(item,indexPath) in
+                        if let index = indexPath{
+                            self.replaceItem(item, index: index)
+                        }
+                        else{
+                            self.addItem(item)
+                        }
+                    }
                 }
             }
         }
@@ -142,23 +172,13 @@ class ToDoViewController: UITableViewController {
         todoList.addToDoItem(item)
         let indexPath = IndexPath(row: countOfToDoItemsBasedOnPriority, section: item.itemPriority.rawValue)
         tableView.insertRows(at: [indexPath], with: .automatic)
+        tableView.reloadData()
     }
     
     fileprivate func replaceItem(_ item:ToDoItem, index:IndexPath) {
         var toDoItemBasedOnPriority = todoList.toDoItems(for: item.itemPriority)
         toDoItemBasedOnPriority[index.row] = item
         tableView.reloadRows(at: [index], with: .automatic)
-    }
-}
-
-extension ToDoViewController:ItemDetailTableViewControllerDelegate{
-    func itemDetailViewController(_ controller: ItemDetailViewController, didFinishUpdating item: ToDoItem, and indexPath: IndexPath?) {
-        if let index = indexPath{
-            replaceItem(item, index: index)
-        }
-        else{
-            addItem(item)
-        }
     }
 }
 

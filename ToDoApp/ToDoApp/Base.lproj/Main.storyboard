@@ -18,6 +18,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        <label key="tableFooterView" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add Items to start with." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="X7w-Q6-uMu">
+                            <rect key="frame" x="0.0" y="117.5" width="414" height="44"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="21"/>
+                            <color key="textColor" red="0.062745098040000002" green="0.48627450979999998" blue="0.30588235289999999" alpha="0.84705882349999995" colorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="detailDisclosureButton" indentationWidth="10" reuseIdentifier="ToDoItem" id="AUA-Nx-6il" customClass="ToDoTableViewCell" customModule="ToDoApp" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="55.5" width="414" height="44"/>
@@ -29,13 +36,13 @@
                                         <label opaque="NO" userInteractionEnabled="NO" tag="100" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IEj-Ep-D8k">
                                             <rect key="frame" x="37" y="11.5" width="42" height="21"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <nil key="textColor"/>
+                                            <color key="textColor" red="0.062745098040000002" green="0.48627450979999998" blue="0.30588235289999999" alpha="0.84705882349999995" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" tag="1001" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="✓" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RSr-9x-FTE">
                                             <rect key="frame" x="10" y="10" width="17" height="24"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
-                                            <nil key="textColor"/>
+                                            <color key="textColor" red="0.062745098040000002" green="0.48627450979999998" blue="0.30588235289999999" alpha="0.84705882349999995" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
@@ -63,11 +70,13 @@
                     <navigationItem key="navigationItem" title="ToDo List" id="IqP-Va-gPG">
                         <rightBarButtonItems>
                             <barButtonItem systemItem="add" id="Zyb-mz-0zs">
+                                <color key="tintColor" red="0.062745098039215685" green="0.48627450980392156" blue="0.30588235294117649" alpha="0.84705882349999995" colorSpace="calibratedRGB"/>
                                 <connections>
                                     <segue destination="ZWl-lj-bYB" kind="show" identifier="AddItemSegue" id="bVi-PS-dD8"/>
                                 </connections>
                             </barButtonItem>
                             <barButtonItem enabled="NO" title="Delete" id="iDt-XP-NSu">
+                                <color key="tintColor" red="0.062745098040000002" green="0.48627450979999998" blue="0.30588235289999999" alpha="0.84705882349999995" colorSpace="calibratedRGB"/>
                                 <connections>
                                     <action selector="deleteItems:" destination="NaG-8p-aap" id="NKN-jN-l3k"/>
                                 </connections>
@@ -76,6 +85,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="deleteBarButton" destination="iDt-XP-NSu" id="3Od-AJ-K3g"/>
+                        <outlet property="emptyLabel" destination="X7w-Q6-uMu" id="cQm-We-09a"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0KR-gL-ASu" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -90,6 +100,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <button key="tableFooterView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="NoY-Rr-KK2">
+                            <rect key="frame" x="0.0" y="97" width="414" height="44"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                            <state key="normal" title="Add Priority">
+                                <color key="titleColor" red="0.062745098040000002" green="0.48627450979999998" blue="0.30588235289999999" alpha="0.84705882349999995" colorSpace="calibratedRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="addPriority:" destination="ZWl-lj-bYB" eventType="touchUpInside" id="a6u-p5-mkc"/>
+                            </connections>
+                        </button>
                         <sections>
                             <tableViewSection id="tHN-yn-vWg">
                                 <cells>
@@ -101,8 +122,8 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Add Item" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="UFQ-KL-zbP">
-                                                    <rect key="frame" x="20" y="0.0" width="394" height="43.5"/>
-                                                    <nil key="textColor"/>
+                                                    <rect key="frame" x="20" y="0.0" width="374" height="43.5"/>
+                                                    <color key="textColor" red="0.062745098040000002" green="0.48627450979999998" blue="0.30588235289999999" alpha="0.84705882349999995" colorSpace="calibratedRGB"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                                                     <connections>
@@ -110,10 +131,18 @@
                                                         <outlet property="delegate" destination="ZWl-lj-bYB" id="Pee-zd-Bsv"/>
                                                     </connections>
                                                 </textField>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a1p-X0-ngD">
+                                                    <rect key="frame" x="404" y="22" width="0.0" height="0.0"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                                    <color key="textColor" red="0.062745098040000002" green="0.48627450979999998" blue="0.30588235289999999" alpha="0.84705882349999995" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstItem="a1p-X0-ngD" firstAttribute="leading" secondItem="UFQ-KL-zbP" secondAttribute="trailing" constant="10" id="2GI-5S-z9H"/>
+                                                <constraint firstAttribute="trailing" secondItem="a1p-X0-ngD" secondAttribute="trailing" constant="10" id="NfQ-v3-Sal"/>
                                                 <constraint firstAttribute="bottom" secondItem="UFQ-KL-zbP" secondAttribute="bottom" id="PCc-fT-IPS"/>
-                                                <constraint firstAttribute="trailing" secondItem="UFQ-KL-zbP" secondAttribute="trailing" id="ipN-Cz-AJl"/>
+                                                <constraint firstItem="a1p-X0-ngD" firstAttribute="centerY" secondItem="CWT-GG-BmT" secondAttribute="centerY" id="hUC-tb-e3G"/>
                                                 <constraint firstItem="UFQ-KL-zbP" firstAttribute="leading" secondItem="CWT-GG-BmT" secondAttribute="leading" constant="20" id="kom-EP-IM2"/>
                                                 <constraint firstItem="UFQ-KL-zbP" firstAttribute="top" secondItem="CWT-GG-BmT" secondAttribute="top" id="n6J-cW-wZd"/>
                                             </constraints>
@@ -143,7 +172,9 @@
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="addItemTextField" destination="UFQ-KL-zbP" id="9OL-iB-gzf"/>
+                        <outlet property="addPriorityButton" destination="NoY-Rr-KK2" id="Cv0-wM-Ebx"/>
                         <outlet property="doneBarButtonItem" destination="O4n-4g-U8b" id="ABr-Kq-ZsY"/>
+                        <outlet property="priorityLabel" destination="a1p-X0-ngD" id="wM3-yK-5hB"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aPM-H4-M9t" userLabel="First Responder" sceneMemberID="firstResponder"/>

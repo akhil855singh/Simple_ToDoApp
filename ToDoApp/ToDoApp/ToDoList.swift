@@ -8,6 +8,13 @@
 
 import Foundation
 
+enum Priority:Int,CaseIterable {
+    case high,
+    medium,
+    low,
+    no
+}
+
 class ToDoList{
     
     private var highPriorityToDoItems:[ToDoItem] = []
@@ -16,17 +23,7 @@ class ToDoList{
     private var noPriorityToDoItems:[ToDoItem] = []
     
     init() {
-       let row0 = ToDoItem(toDoName: "Take a jog", isChecked: false, priority: .high)
-       let row1 = ToDoItem(toDoName: "Watch a movie", isChecked: false, priority: .medium)
-       let row2 = ToDoItem(toDoName: "Code an app", isChecked: false, priority: .low)
-       let row3 = ToDoItem(toDoName: "Walk the dog", isChecked: false, priority: .no)
-       let row4 = ToDoItem(toDoName: "Study design patterns", isChecked: false, priority: .medium)
-        
-        highPriorityToDoItems.append(row0)
-        mediumPriorityToDoItems.append(row1)
-        lowPriorityToDoItems.append(row2)
-        noPriorityToDoItems.append(row3)
-        mediumPriorityToDoItems.append(row4)
+       
     }
     
     func addToDoItem(_ toDoItem:ToDoItem){
@@ -52,6 +49,15 @@ class ToDoList{
             return lowPriorityToDoItems
         case .no:
             return noPriorityToDoItems
+        }
+    }
+    
+    func isListEmpty() -> Bool{
+        if highPriorityToDoItems.count == 0 && mediumPriorityToDoItems.count == 0 && lowPriorityToDoItems.count == 0 && noPriorityToDoItems.count == 0{
+            return true
+        }
+        else{
+            return false
         }
     }
     
