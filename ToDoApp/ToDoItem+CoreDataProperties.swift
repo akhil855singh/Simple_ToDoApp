@@ -20,7 +20,7 @@ extension ToDoItem {
     @NSManaged public var itemName: String?
     @NSManaged public var isCompleted: Bool
     @NSManaged public var itemDescription: String?
-    @NSManaged public var itemPriority: Int64
+    @NSManaged public var itemPriority: Int16
     @NSManaged public var itemReminderDate: NSDate?
 
 }

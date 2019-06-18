@@ -12,7 +12,5 @@ import CoreData
 
 @objc(ToDoItem)
 public class ToDoItem: NSManagedObject {
-
-    public func createToDoItem()
     
 }

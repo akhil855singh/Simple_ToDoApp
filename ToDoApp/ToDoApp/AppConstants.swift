@@ -10,3 +10,9 @@ import Foundation
 import UIKit
 
 let appThemeColor = UIColor(red: 16.0/255.0, green: 124.0/255.0, blue: 78.0/255.0, alpha: 1)
+let appThemeColorFaded = UIColor(red: 16.0/255.0, green: 124.0/255.0, blue: 78.0/255.0, alpha: 0.35)
+let itemName = "itemName"
+let itemDescription = "itemDescription"
+let isCompleted = "isCompleted"
+let itemPriority = "itemPriority"
+let itemReminderDate = "itemReminderDate"

@@ -10,9 +10,11 @@ import UIKit
 
 class ToDoViewController: UITableViewController {
 
+    @IBOutlet weak var addItemsButton: UIButton!
+    @IBOutlet weak var showCompletedButton: UIButton!
     var todoList:ToDoList
     
-    @IBOutlet weak var emptyLabel: UILabel!
+    @IBOutlet weak var itemSearchBar: UISearchBar!
     @IBOutlet weak var deleteBarButton: UIBarButtonItem!
     required init?(coder aDecoder: NSCoder) {
         todoList = ToDoList()
@@ -23,8 +25,16 @@ class ToDoViewController: UITableViewController {
         super.viewDidLoad()
         self.navigationController?.navigationBar.prefersLargeTitles = true
         tableView.allowsMultipleSelectionDuringEditing = true
+        todoList.populateAllArrays(showCompletedButton.isSelected)
+        tableView.reloadData()
     }
     
+    @IBAction func addItems(_ sender: Any) {
+        self.performSegue(withIdentifier: "AddItemSegue", sender: nil)
+    }
+    @IBAction func showCompleted(_ sender: Any) {
+        showCompletedButton.isSelected = !showCompletedButton.isSelected
+    }
     private func getPriorityForIndex(_ index:Int) -> Priority{
         return Priority(rawValue: index) ?? .no
     }
@@ -38,6 +48,7 @@ class ToDoViewController: UITableViewController {
             tableView.beginUpdates()
             tableView.deleteRows(at: selectedRows, with: .automatic)
             tableView.endUpdates()
+            tableView.reloadData()
         }
     }
     
@@ -55,11 +66,15 @@ class ToDoViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let priority = getPriorityForIndex(section)
         if todoList.isListEmpty(){
-            emptyLabel.isHidden = false
+            addItemsButton.isHidden = false
+            showCompletedButton.isHidden = true
+            itemSearchBar.isHidden = true
             self.navigationItem.leftBarButtonItem = nil
         }
         else{
-            emptyLabel.isHidden = true
+            addItemsButton.isHidden = true
+            showCompletedButton.isHidden = false
+            itemSearchBar.isHidden = false
             self.navigationItem.leftBarButtonItem = editButtonItem
         }
         return todoList.toDoItems(for: priority).count
@@ -112,7 +127,9 @@ class ToDoViewController: UITableViewController {
                 let toDoItemsBasedOnPriority = todoList.toDoItems(for: priority)
                 let toDoItemBasedOnPriority = toDoItemsBasedOnPriority[indexPath.row]
                 if let cell = tableView.cellForRow(at: indexPath) as? ToDoTableViewCell{
-                    toDoItemBasedOnPriority.checked.toggle()
+                    let itemDict:NSDictionary = NSDictionary(dictionary: [!toDoItemBasedOnPriority.isCompleted:isCompleted])
+                    toDoItemBasedOnPriority.isCompleted.toggle()
+                    todoList.updateToDoItem(toDoItemBasedOnPriority, itemDict: itemDict as NSDictionary)
                     cell.configureCheckmark(for: toDoItemBasedOnPriority)
                 }
             tableView.deselectRow(at: indexPath, animated: true)
@@ -124,6 +141,7 @@ class ToDoViewController: UITableViewController {
         let toDoItemsBasedOnSourcePriority = todoList.toDoItems(for: sourcePriority)
         let destinationPriority = getPriorityForIndex(destinationIndexPath.section)
         self.todoList.moveItem(item: toDoItemsBasedOnSourcePriority[sourceIndexPath.row], fromPriority: sourcePriority, toPriority: destinationPriority, from: sourceIndexPath.row, to: destinationIndexPath.row)
+        todoList.populateAllArrays(showCompletedButton.isSelected)
         tableView.reloadData()
     }
     
@@ -131,6 +149,7 @@ class ToDoViewController: UITableViewController {
         if editingStyle == .delete{
             let priority = getPriorityForIndex(indexPath.section)
             todoList.remove(basedOn: priority, at: indexPath.row)
+            todoList.populateAllArrays(showCompletedButton.isSelected)
             tableView.deleteRows(at: [indexPath], with: .automatic)
         }
     }
@@ -144,6 +163,7 @@ class ToDoViewController: UITableViewController {
                     let toDoItem = todoList.toDoItems(for: priorityObject)[indexPath?.row ?? 0]
                     addItemViewController.toBeEditedItem = toDoItem
                     addItemViewController.toBeEditedIndex = indexPath
+                    addItemViewController.itemList = todoList
                     addItemViewController.itemUpdateHandler = {(item,indexPath) in
                         if let index = indexPath{
                             self.replaceItem(item, index: index)
@@ -154,6 +174,7 @@ class ToDoViewController: UITableViewController {
                     }
                 }
                 else{
+                    addItemViewController.itemList = todoList
                     addItemViewController.itemUpdateHandler = {(item,indexPath) in
                         if let index = indexPath{
                             self.replaceItem(item, index: index)
@@ -168,16 +189,18 @@ class ToDoViewController: UITableViewController {
     }
     
     fileprivate func addItem(_ item:ToDoItem) {
-        let countOfToDoItemsBasedOnPriority = todoList.toDoItems(for: item.itemPriority).count
-        todoList.addToDoItem(item)
-        let indexPath = IndexPath(row: countOfToDoItemsBasedOnPriority, section: item.itemPriority.rawValue)
+        let countOfToDoItemsBasedOnPriority = todoList.toDoItems(for: Priority(rawValue: Int(item.itemPriority)) ?? .no).count
+        todoList.addToDoItemToArray(item)
+        todoList.populateAllArrays(showCompletedButton.isSelected)
+        let indexPath = IndexPath(row: countOfToDoItemsBasedOnPriority, section: Int(item.itemPriority))
         tableView.insertRows(at: [indexPath], with: .automatic)
         tableView.reloadData()
     }
     
     fileprivate func replaceItem(_ item:ToDoItem, index:IndexPath) {
-        var toDoItemBasedOnPriority = todoList.toDoItems(for: item.itemPriority)
+        var toDoItemBasedOnPriority = todoList.toDoItems(for: Priority(rawValue: Int(item.itemPriority)) ?? .no)
         toDoItemBasedOnPriority[index.row] = item
+        todoList.populateAllArrays(showCompletedButton.isSelected)
         tableView.reloadRows(at: [index], with: .automatic)
     }
 }

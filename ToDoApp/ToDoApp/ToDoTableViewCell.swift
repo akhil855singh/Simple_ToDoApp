@@ -24,7 +24,7 @@ class ToDoTableViewCell: UITableViewCell {
     }
     
     func configureCheckmark(for item:ToDoItem){
-            if item.checked{
+            if item.isCompleted{
                 checkMarkLabel.text = "✓"
             }
             else{
@@ -33,7 +33,6 @@ class ToDoTableViewCell: UITableViewCell {
     }
     
     func configureText(for item:ToDoItem){
-            toDoNameLabel.text = item.text
+            toDoNameLabel.text = item.itemName
     }
-
 }
